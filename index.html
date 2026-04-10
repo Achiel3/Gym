@@ -6,15 +6,15 @@
     <title>Gym Audio: David Laid Edition</title>
     <style>
         :root { --green: #1DB954; --black: #121212; --grey: #282828; --light: #b3b3b3; }
-        body { background: var(--black); color: white; font-family: 'Helvetica Neue', sans-serif; margin: 0; padding-bottom: 200px; }
+        body { background: var(--black); color: white; font-family: 'Helvetica Neue', sans-serif; margin: 0; padding-bottom: 200px; -webkit-tap-highlight-color: transparent; }
         .container { max-width: 500px; margin: 0 auto; padding: 20px; }
         
         /* Spotify-style Cards */
         .card { background: #181818; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 12px; margin: 8px 0; background: var(--grey); border: none; color: white; border-radius: 6px; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: var(--grey); border: none; color: white; border-radius: 6px; box-sizing: border-box; outline: none; }
         button { background: var(--green); color: black; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; margin-top: 5px; }
-        button:active { transform: scale(0.98); }
-        .share-btn { background: #333; color: white; font-size: 12px; margin-top: 10px; }
+        button:active { transform: scale(0.95); }
+        .share-btn { background: #333; color: white; font-size: 12px; margin-top: 10px; flex: 1; }
 
         /* Track List */
         .track { display: flex; align-items: center; padding: 12px; border-radius: 8px; margin-bottom: 8px; background: rgba(255,255,255,0.03); cursor: pointer; }
@@ -22,14 +22,14 @@
         .track-img { width: 50px; height: 50px; border-radius: 4px; margin-right: 15px; object-fit: cover; }
         .track-info { flex: 1; overflow: hidden; }
         .track-title { font-weight: bold; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .delete-btn { width: auto; background: none; color: #555; padding: 5px 10px; }
+        .delete-btn { width: auto; background: none; color: #555; padding: 5px 10px; font-size: 18px; }
 
         /* Player Bar */
         .player { position: fixed; bottom: 0; width: 100%; background: #070707; padding: 15px 20px; border-top: 1px solid var(--grey); box-sizing: border-box; z-index: 100; }
         .now-playing-box { display: flex; align-items: center; margin-bottom: 10px; }
         .current-art { width: 45px; height: 45px; border-radius: 4px; margin-right: 12px; object-fit: cover; border: 1px solid #333; }
         
-        .progress-container { width: 100%; height: 4px; background: var(--grey); border-radius: 2px; margin: 10px 0; cursor: pointer; }
+        .progress-container { width: 100%; height: 4px; background: var(--grey); border-radius: 2px; margin: 10px 0; cursor: pointer; position: relative; }
         #progress { height: 100%; background: var(--green); width: 0%; border-radius: 2px; }
         .player-controls { display: flex; justify-content: space-around; align-items: center; }
         .icon-btn { background: none; color: var(--light); width: auto; font-size: 24px; cursor: pointer; border: none; padding: 5px; }
@@ -42,25 +42,9 @@
     <h1 style="letter-spacing: -1px; text-align: center;">GYM <span style="color:var(--green)">AUDIO</span></h1>
 
     <div class="card">
-        <input type="text" id="title" placeholder="Naam van de sound...">
-        <input type="text" id="url" placeholder="MP3 Link (eindigt op .mp3)">
-        <button onclick="addTrack()">TOEVOEGEN AAN LIJST</button>
+        <input type="text" id="title" placeholder="Naam van de sound (bijv. Phonk)...">
+        <input type="text" id="url" placeholder="MP3 Link (moet eindigen op .mp3)">
+        <button onclick="addTrack()">TOEVOEGEN AAN PLAYLIST</button>
         <div style="display: flex; gap: 10px;">
             <button class="share-btn" onclick="exportPlaylist()">DEEL LIJST</button>
             <button class="share-btn" onclick="importPlaylist()">IMPORT LIJST</button>
-        </div>
-    </div>
-
-    <div id="playlist"></div>
-</div>
-
-<div class="player">
-    <div class="now-playing-box">
-        <img src="https://www.tiktok.com/api/img/?itemId=7276224911641677061&location=0&aid=1988" id="currentArt" class="current-art">
-        <div style="overflow: hidden;">
-            <div id="now-playing-title" style="font-weight: bold; font-size: 14px; white-space: nowrap;">Kies een sound</div>
-            <div style="font-size: 11px; color: var(--light);">David Laid 2016 Edition</div>
-        </div>
-    </div>
-    
-    <div class
