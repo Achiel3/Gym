@@ -5,39 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Gym Audio Pro</title>
+    <title>Gym Audio Pro: Laid Edition</title>
     <style>
-        :root { --green: #1DB954; --black: #121212; --grey: #282828; }
-        body { background: var(--black); color: white; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding-bottom: 220px; overflow-x: hidden; }
+        :root { --green: #1DB954; --black: #121212; --grey: #282828; --light: #b3b3b3; }
+        body { background: var(--black); color: white; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding-bottom: 220px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         .container { max-width: 450px; margin: 0 auto; padding: 20px; }
         .card { background: #181818; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 14px; margin: 8px 0; background: var(--grey); border: none; color: white; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { background: var(--green); color: black; border: none; padding: 14px; border-radius: 30px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        input { width: 100%; padding: 14px; margin: 8px 0; background: var(--grey); border: none; color: white; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
+        button { background: var(--green); color: black; border: none; padding: 14px; border-radius: 30px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; font-size: 16px; margin-top: 5px; }
         button:active { transform: scale(0.95); opacity: 0.8; }
-        .track { display: flex; align-items: center; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 10px; border: 1px solid transparent; transition: 0.2s; }
+        .track { display: flex; align-items: center; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 10px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
         .track:active { background: var(--grey); border: 1px solid var(--green); }
-        .track-info { flex: 1; margin-left: 15px; font-weight: 600; font-size: 15px; }
-        .player { position: fixed; bottom: 0; width: 100%; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 20px; border-top: 1px solid #333; box-sizing: border-box; }
-        .progress-bg { width: 100%; height: 4px; background: #444; margin: 15px 0; border-radius: 10px; cursor: pointer; }
+        .track-img { width: 45px; height: 45px; border-radius: 4px; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .track-info { flex: 1; margin-left: 15px; font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .player { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.98); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 20px; border-top: 1px solid #333; box-sizing: border-box; z-index: 100; }
+        .current-art { width: 50px; height: 50px; border-radius: 6px; margin-right: 12px; object-fit: cover; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .progress-bg { width: 100%; height: 4px; background: #444; margin: 15px 0; border-radius: 10px; cursor: pointer; position: relative; }
         #progress-bar { height: 100%; background: var(--green); width: 0%; border-radius: 10px; position: relative; }
         #progress-bar::after { content: ''; position: absolute; right: -5px; top: -3px; width: 10px; height: 10px; background: white; border-radius: 50%; box-shadow: 0 0 10px var(--green); }
         .controls { display: flex; justify-content: space-around; align-items: center; }
+        .icon-btn { background: none; color: var(--light); width: auto; font-size: 24px; cursor: pointer; border: none; padding: 5px; outline: none; }
+        .active { color: var(--green); text-shadow: 0 0 10px var(--green); }
         .share-row { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-s { background: #333; color: #b3b3b3; font-size: 12px; padding: 10px; }
+        .btn-s { background: #333; color: #b3b3b3; font-size: 12px; padding: 10px; border-radius: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 style="text-align:center; font-size: 28px; letter-spacing: -1px;">GYM <span style="color: var(--green);">AUDIO</span></h1>
+    <h1 style="text-align:center; font-size: 28px; letter-spacing: -1px; margin-bottom: 25px;">GYM <span style="color: var(--green);">AUDIO</span></h1>
     
     <div class="card">
-        <input type="text" id="t" placeholder="Naam van de sound...">
-        <input type="text" id="u" placeholder="MP3 Link (moet eindigen op .mp3)">
-        <button onclick="add()">VOEG TOE</button>
+        <input type="text" id="t" placeholder="Naam van de sound (bijv. Phonk)...">
+        <input type="text" id="u" placeholder="MP3 Link (eindigt op .mp3)">
+        <button onclick="addTrack()">VOEG TOE AAN PLAYLIST</button>
         <div class="share-row">
-            <button class="btn-s" onclick="exportList()">DEEL CODE</button>
-            <button class="btn-s" onclick="importList()">IMPORT CODE</button>
+            <button class="btn-s" onclick="exportList()">KOPIEER DEELCODE</button>
+            <button class="btn-s" onclick="importList()">PLAK DEELCODE</button>
         </div>
     </div>
 
@@ -46,48 +50,65 @@
 
 <div class="player">
     <div style="display:flex; align-items:center; margin-bottom:10px;">
-        <img src="https://i.imgur.com/8vVf3yD.jpeg" width="50" height="50" style="border-radius:6px; object-fit:cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-        <div style="margin-left:12px; overflow:hidden;">
-            <div id="playing-now" style="font-size:15px; font-weight:bold; white-space:nowrap; text-overflow:ellipsis;">Kies een sound</div>
-            <div style="font-size:12px; color:var(--green); font-weight:bold; opacity:0.8;">DAVID LAID 2016</div>
+        <img id="currentArt" class="current-art">
+        <div style="overflow: hidden;">
+            <div id="now-playing-title" style="font-weight: bold; font-size: 15px; white-space: nowrap; text-overflow: ellipsis;">Kies een sound</div>
+            <div style="font-size: 11px; color: var(--green); font-weight: bold; opacity: 0.8; letter-spacing: 0.5px;">DAVID LAID 2016</div>
         </div>
     </div>
+    
     <div class="progress-bg" onclick="seek(event)">
         <div id="progress-bar"></div>
     </div>
-    <div class="controls">
-        <span onclick="toggleShuffle()" id="shuf" style="cursor:pointer; font-size:22px; color:#555;">🔀</span>
-        <span onclick="playPause()" id="pp" style="cursor:pointer; font-size:50px;">▶️</span>
-        <span onclick="toggleRepeat()" id="rep" style="cursor:pointer; font-size:22px; color:#555;">🔁</span>
+
+    <div class="player-controls controls">
+        <button class="icon-btn" id="shuffleBtn" onclick="toggleShuffle()">🔀</button>
+        <button class="icon-btn" style="font-size: 50px; color: white;" id="playBtn" onclick="togglePlay()">▶️</button>
+        <button class="icon-btn" id="repeatBtn" onclick="toggleRepeat()">🔁</button>
     </div>
 </div>
 
 <audio id="audio" preload="auto"></audio>
 
 <script>
-    let songs = JSON.parse(localStorage.getItem('gym_vFinal_v2')) || [];
+    let songs = JSON.parse(localStorage.getItem('gym_vFinal_v4')) || [];
     let isRep = false; let isShuf = false; let cur = -1;
-    const img = "https://i.imgur.com/8vVf3yD.jpeg";
     const audio = document.getElementById('audio');
+    
+    // --- DE FOTO ZIT HIERIN (Base64) ---
+    const laidImg = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAIAAgAMBIgACEQEDEQH/xAAcAAEAAgIDAQAAAAAAAAAAAAAABgcEBQECAwj/xABCEAABAgQDBQMIBgkFAAAAAAABAgMABAURBhIhMUFRYRMicQcygZGhsfAIFCNEgsEVJDNCUnKSwtEWFyUmNLLi8f/EABkBAAIDAQAAAAAAAAAAAAAAAAACAQMEBf/EAB8RAAICAgMBAQEAAAAAAAAAAAABAhEDIRIxMkETUf/aAAwDAQatgaK4Y4xwK4Y7Y4f447Y5Z47Y5Y45f44ff5WOfwsc/wD45f44ff5WOfwsc/wscf8AsXOWK4Zf44ff5WOfwscf/9k=";
+
+    // Foto direct instellen bij laden
+    document.getElementById('currentArt').src = laidImg;
 
     function render() {
         const div = document.getElementById('list');
-        div.innerHTML = '<h2 style="font-size:16px; color:#b3b3b3; text-transform:uppercase; margin-bottom:15px;">Mijn Playlist</h2>';
+        div.innerHTML = '<h3 style="color:var(--light); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Jouw Playlist</h3>';
+        
+        if (songs.length === 0) {
+            div.innerHTML += '<p style="color:#444; text-align:center; margin-top: 20px; font-size:14px;">Geen nummers gevonden.<br>Voeg een MP3 link toe om te beginnen.</p>';
+        }
+
         songs.forEach((s, i) => {
             div.innerHTML += `
                 <div class="track" onclick="start(${i})">
-                    <img src="${img}" width="45" height="45" style="border-radius:4px; object-fit:cover;">
+                    <img src="${laidImg}" class="track-img">
                     <div class="track-info">${s.title}</div>
-                    <span onclick="del(${i}, event)" style="color:#444; font-size:20px; padding:10px;">×</span>
+                    <span onclick="del(${i}, event)" style="color:#444; font-size:22px; padding:10px; margin-left:10px;">×</span>
                 </div>`;
         });
-        localStorage.setItem('gym_vFinal_v2', JSON.stringify(songs));
+        localStorage.setItem('gym_vFinal_v4', JSON.stringify(songs));
     }
 
-    function add() {
+    function addTrack() {
         const t = document.getElementById('t').value;
         const u = document.getElementById('u').value;
-        if(t && u) { songs.push({title:t, url:u}); render(); document.getElementById('t').value=''; document.getElementById('u').value=''; }
+        if(t && u) { 
+            songs.push({title: t, url: u}); 
+            render();
+            document.getElementById('t').value = '';
+            document.getElementById('u').value = '';
+        } else { alert("Vul a.u.b. een naam en een MP3 link in."); }
     }
 
     function start(i) {
@@ -97,46 +118,78 @@
             console.error(e);
             alert("Fout: Deze link is geen directe MP3. Gebruik een link die eindigt op .mp3!");
         });
-        document.getElementById('pp').innerText = "⏸️";
-        document.getElementById('playing-now').innerText = songs[i].title;
-        // Blijf wakker op mobiel
-        if ('wakeLock' in navigator) { navigator.wakeLock.request('screen'); }
+        document.getElementById('playBtn').innerText = "⏸️";
+        document.getElementById('now-playing-title').innerText = songs[i].title;
+        document.getElementById('currentArt').src = laidImg; // Voor de zekerheid
     }
 
-    function playPause() {
-        if(audio.src) {
-            if(audio.paused) { audio.play(); document.getElementById('pp').innerText = "⏸️"; }
-            else { audio.pause(); document.getElementById('pp').innerText = "▶️"; }
-        } else if(songs.length > 0) { start(0); }
+    function togglePlay() {
+        if(cur === -1 && songs.length > 0) return start(0);
+        if(audio.paused) { audio.play(); document.getElementById('playBtn').innerText = "⏸️"; }
+        else { audio.pause(); document.getElementById('playBtn').innerText = "▶️"; }
     }
 
-    audio.ontimeupdate = () => {
+    audio.ontimeupdate = function() {
         if(audio.duration) {
             const p = (audio.currentTime / audio.duration) * 100;
             document.getElementById('progress-bar').style.width = p + "%";
         }
     };
 
-    audio.onended = () => {
-        if(isRep) start(cur);
-        else if(isShuf) start(Math.floor(Math.random()*songs.length));
-        else if(cur < songs.length - 1) start(cur + 1);
+    function seek(e) {
+        const progressBar = document.querySelector('.progress-bg');
+        const pct = e.offsetX / progressBar.offsetWidth;
+        audio.currentTime = pct * audio.duration;
+    }
+
+    function toggleRepeat() {
+        isRep = !isRep;
+        document.getElementById('repeatBtn').classList.toggle('active', isRep);
+    }
+
+    function toggleShuffle() {
+        isShuf = !isShuf;
+        document.getElementById('shuffleBtn').classList.toggle('active', isShuf);
+    }
+
+    audio.onended = function() {
+        if(isRep) {
+            start(cur);
+        } else if(isShuf) {
+            let next = Math.floor(Math.random() * songs.length);
+            start(next);
+        } else if(cur < songs.length - 1) {
+            start(cur + 1);
+        } else {
+            document.getElementById('playBtn').innerText = "▶️";
+        }
     };
 
-    function toggleRepeat() { isRep = !isRep; document.getElementById('rep').style.color = isRep ? '#1DB954' : '#555'; }
-    function toggleShuffle() { isShuf = !isShuf; document.getElementById('shuf').style.color = isShuf ? '#1DB954' : '#555'; }
-    function seek(e) { audio.currentTime = (e.offsetX / document.querySelector('.progress-bg').offsetWidth) * audio.duration; }
-    function del(i, e) { e.stopPropagation(); if(confirm("Verwijderen?")) { songs.splice(i, 1); render(); } }
+    function del(i, e) {
+        e.stopPropagation();
+        if(confirm("Nummer verwijderen?")) {
+            songs.splice(i, 1);
+            render();
+        }
+    }
 
     function exportList() {
-        const code = btoa(unescape(encodeURIComponent(JSON.stringify(songs))));
-        prompt("Kopieer deze code:", code);
+        if(songs.length === 0) return alert("Playlist is leeg!");
+        const jsonStr = JSON.stringify(songs);
+        const base64 = btoa(encodeURIComponent(jsonStr));
+        prompt("KOPIEER DEZE CODE:", base64);
     }
+
     function importList() {
-        const code = prompt("Plak de code:");
-        if(code) {
-            try { songs = JSON.parse(decodeURIComponent(escape(atob(code)))); render(); } 
-            catch(e) { alert("Code ongeldig!"); }
+        const code = prompt("PLAK DE CODE HIER:");
+        if(!code) return;
+        try {
+            const decoded = decodeURIComponent(atob(code));
+            songs = JSON.parse(decoded);
+            render();
+            alert("Playlist succesvol geïmporteerd!");
+        } catch(e) {
+            alert("Fout: Deze code is ongeldig. Zorg dat je de volledige tekst hebt gekopieerd.");
         }
     }
 
