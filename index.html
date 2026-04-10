@@ -3,37 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Gym Audio Pro</title>
     <style>
         :root { --green: #1DB954; --black: #121212; --grey: #282828; }
-        body { background: var(--black); color: white; font-family: sans-serif; margin: 0; padding-bottom: 200px; }
+        body { background: var(--black); color: white; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding-bottom: 220px; overflow-x: hidden; }
         .container { max-width: 450px; margin: 0 auto; padding: 20px; }
-        .card { background: #181818; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
-        input { width: 100%; padding: 12px; margin: 5px 0; background: var(--grey); border: none; color: white; border-radius: 5px; box-sizing: border-box; }
-        button { background: var(--green); color: black; border: none; padding: 12px; border-radius: 25px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; }
-        .track { display: flex; align-items: center; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); margin-bottom: 8px; cursor: pointer; }
-        .track-info { flex: 1; margin-left: 12px; font-weight: bold; }
-        .player { position: fixed; bottom: 0; width: 100%; background: #000; padding: 20px; border-top: 1px solid #333; box-sizing: border-box; }
-        .progress-bg { width: 100%; height: 5px; background: #333; margin: 15px 0; border-radius: 5px; cursor: pointer; }
-        #progress-bar { height: 100%; background: var(--green); width: 0%; border-radius: 5px; }
+        .card { background: #181818; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 14px; margin: 8px 0; background: var(--grey); border: none; color: white; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { background: var(--green); color: black; border: none; padding: 14px; border-radius: 30px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        button:active { transform: scale(0.95); opacity: 0.8; }
+        .track { display: flex; align-items: center; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 10px; border: 1px solid transparent; transition: 0.2s; }
+        .track:active { background: var(--grey); border: 1px solid var(--green); }
+        .track-info { flex: 1; margin-left: 15px; font-weight: 600; font-size: 15px; }
+        .player { position: fixed; bottom: 0; width: 100%; background: rgba(18,18,18,0.95); backdrop-filter: blur(10px); padding: 20px; border-top: 1px solid #333; box-sizing: border-box; }
+        .progress-bg { width: 100%; height: 4px; background: #444; margin: 15px 0; border-radius: 10px; cursor: pointer; }
+        #progress-bar { height: 100%; background: var(--green); width: 0%; border-radius: 10px; position: relative; }
+        #progress-bar::after { content: ''; position: absolute; right: -5px; top: -3px; width: 10px; height: 10px; background: white; border-radius: 50%; box-shadow: 0 0 10px var(--green); }
         .controls { display: flex; justify-content: space-around; align-items: center; }
-        .share-section { display: flex; gap: 10px; margin-top: 10px; }
-        .share-btn { background: #333; color: white; font-size: 11px; padding: 8px; }
+        .share-row { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-s { background: #333; color: #b3b3b3; font-size: 12px; padding: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 style="text-align:center; color: var(--green);">GYM AUDIO</h1>
+    <h1 style="text-align:center; font-size: 28px; letter-spacing: -1px;">GYM <span style="color: var(--green);">AUDIO</span></h1>
     
     <div class="card">
         <input type="text" id="t" placeholder="Naam van de sound...">
-        <input type="text" id="u" placeholder="MP3 Link (eindigt op .mp3)">
+        <input type="text" id="u" placeholder="MP3 Link (moet eindigen op .mp3)">
         <button onclick="add()">VOEG TOE</button>
-        
-        <div class="share-section">
-            <button class="share-btn" onclick="exportList()">DEEL PLAYLIST</button>
-            <button class="share-btn" onclick="importList()">IMPORT PLAYLIST</button>
+        <div class="share-row">
+            <button class="btn-s" onclick="exportList()">DEEL CODE</button>
+            <button class="btn-s" onclick="importList()">IMPORT CODE</button>
         </div>
     </div>
 
@@ -42,42 +46,42 @@
 
 <div class="player">
     <div style="display:flex; align-items:center; margin-bottom:10px;">
-        <img src="https://i.imgur.com/8vVf3yD.jpeg" width="40" height="40" style="border-radius:4px; margin-right:10px;">
-        <div>
-            <div id="playing-now" style="font-size:14px; font-weight:bold;">Kies een sound</div>
-            <div style="font-size:11px; color:grey;">David Laid Edition</div>
+        <img src="https://i.imgur.com/8vVf3yD.jpeg" width="50" height="50" style="border-radius:6px; object-fit:cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+        <div style="margin-left:12px; overflow:hidden;">
+            <div id="playing-now" style="font-size:15px; font-weight:bold; white-space:nowrap; text-overflow:ellipsis;">Kies een sound</div>
+            <div style="font-size:12px; color:var(--green); font-weight:bold; opacity:0.8;">DAVID LAID 2016</div>
         </div>
     </div>
     <div class="progress-bg" onclick="seek(event)">
         <div id="progress-bar"></div>
     </div>
     <div class="controls">
-        <span onclick="toggleShuffle()" id="shuf" style="cursor:pointer; font-size:20px; color:#555;">🔀</span>
-        <span onclick="playPause()" id="pp" style="cursor:pointer; font-size:40px;">▶️</span>
-        <span onclick="toggleRepeat()" id="rep" style="cursor:pointer; font-size:20px; color:#555;">🔁</span>
+        <span onclick="toggleShuffle()" id="shuf" style="cursor:pointer; font-size:22px; color:#555;">🔀</span>
+        <span onclick="playPause()" id="pp" style="cursor:pointer; font-size:50px;">▶️</span>
+        <span onclick="toggleRepeat()" id="rep" style="cursor:pointer; font-size:22px; color:#555;">🔁</span>
     </div>
 </div>
 
-<audio id="audio"></audio>
+<audio id="audio" preload="auto"></audio>
 
 <script>
-    let songs = JSON.parse(localStorage.getItem('gym_vFinal')) || [];
+    let songs = JSON.parse(localStorage.getItem('gym_vFinal_v2')) || [];
     let isRep = false; let isShuf = false; let cur = -1;
     const img = "https://i.imgur.com/8vVf3yD.jpeg";
     const audio = document.getElementById('audio');
 
     function render() {
         const div = document.getElementById('list');
-        div.innerHTML = '';
+        div.innerHTML = '<h2 style="font-size:16px; color:#b3b3b3; text-transform:uppercase; margin-bottom:15px;">Mijn Playlist</h2>';
         songs.forEach((s, i) => {
             div.innerHTML += `
                 <div class="track" onclick="start(${i})">
                     <img src="${img}" width="45" height="45" style="border-radius:4px; object-fit:cover;">
                     <div class="track-info">${s.title}</div>
-                    <span onclick="del(${i}, event)" style="color:#555; padding:10px;">✕</span>
+                    <span onclick="del(${i}, event)" style="color:#444; font-size:20px; padding:10px;">×</span>
                 </div>`;
         });
-        localStorage.setItem('gym_vFinal', JSON.stringify(songs));
+        localStorage.setItem('gym_vFinal_v2', JSON.stringify(songs));
     }
 
     function add() {
@@ -89,9 +93,14 @@
     function start(i) {
         cur = i;
         audio.src = songs[i].url;
-        audio.play().catch(e => alert("De link werkt niet. Gebruik een directe .mp3 link!"));
+        audio.play().catch(e => {
+            console.error(e);
+            alert("Fout: Deze link is geen directe MP3. Gebruik een link die eindigt op .mp3!");
+        });
         document.getElementById('pp').innerText = "⏸️";
         document.getElementById('playing-now').innerText = songs[i].title;
+        // Blijf wakker op mobiel
+        if ('wakeLock' in navigator) { navigator.wakeLock.request('screen'); }
     }
 
     function playPause() {
@@ -102,8 +111,10 @@
     }
 
     audio.ontimeupdate = () => {
-        const p = (audio.currentTime / audio.duration) * 100;
-        document.getElementById('progress-bar').style.width = p + "%";
+        if(audio.duration) {
+            const p = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('progress-bar').style.width = p + "%";
+        }
     };
 
     audio.onended = () => {
@@ -115,18 +126,17 @@
     function toggleRepeat() { isRep = !isRep; document.getElementById('rep').style.color = isRep ? '#1DB954' : '#555'; }
     function toggleShuffle() { isShuf = !isShuf; document.getElementById('shuf').style.color = isShuf ? '#1DB954' : '#555'; }
     function seek(e) { audio.currentTime = (e.offsetX / document.querySelector('.progress-bg').offsetWidth) * audio.duration; }
-    function del(i, e) { e.stopPropagation(); songs.splice(i, 1); render(); }
+    function del(i, e) { e.stopPropagation(); if(confirm("Verwijderen?")) { songs.splice(i, 1); render(); } }
 
-    // DEEL SYSTEEM
     function exportList() {
-        const code = btoa(JSON.stringify(songs));
-        prompt("Kopieer deze code en stuur hem naar je vrienden:", code);
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(songs))));
+        prompt("Kopieer deze code:", code);
     }
     function importList() {
-        const code = prompt("Plak de code van je vriend hier:");
+        const code = prompt("Plak de code:");
         if(code) {
-            try { songs = JSON.parse(atob(code)); render(); } 
-            catch(e) { alert("Code is niet geldig!"); }
+            try { songs = JSON.parse(decodeURIComponent(escape(atob(code)))); render(); } 
+            catch(e) { alert("Code ongeldig!"); }
         }
     }
 
