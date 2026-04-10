@@ -48,3 +48,154 @@
         <div style="display: flex; gap: 10px;">
             <button class="share-btn" onclick="exportPlaylist()">DEEL LIJST</button>
             <button class="share-btn" onclick="importPlaylist()">IMPORT LIJST</button>
+        </div>
+    </div>
+
+    <div id="playlist"></div>
+</div>
+
+<div class="player">
+    <div class="now-playing-box">
+        <img src="https://i.imgur.com/8vVf3yD.jpeg" id="currentArt" class="current-art">
+        <div style="overflow: hidden;">
+            <div id="now-playing-title" style="font-weight: bold; font-size: 14px; white-space: nowrap;">Kies een sound</div>
+            <div style="font-size: 11px; color: var(--light);">David Laid 2016 Edition</div>
+        </div>
+    </div>
+    
+    <div class="progress-container" id="progressBar">
+        <div id="progress"></div>
+    </div>
+
+    <div class="player-controls">
+        <button class="icon-btn" id="shuffleBtn" onclick="toggleShuffle()">🔀</button>
+        <button class="icon-btn" style="font-size: 45px; color: white;" id="playBtn" onclick="togglePlay()">▶️</button>
+        <button class="icon-btn" id="repeatBtn" onclick="toggleRepeat()">🔁</button>
+    </div>
+</div>
+
+<audio id="audio"></audio>
+
+<script>
+    let songs = JSON.parse(localStorage.getItem('gym-ultimate-v1')) || [];
+    let isRepeat = false;
+    let isShuffle = false;
+    let currentIdx = -1;
+    // Gebruik Imgur link voor stabiliteit
+    const laidImg = "https://i.imgur.com/8vVf3yD.jpeg";
+
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const progressBar = document.getElementById('progressBar');
+    const progress = document.getElementById('progress');
+
+    function render() {
+        const list = document.getElementById('playlist');
+        list.innerHTML = '<h3 style="color:var(--light); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Jouw Playlist</h3>';
+        
+        if (songs.length === 0) {
+            list.innerHTML += '<p style="color:#444; text-align:center; margin-top: 20px;">Geen nummers gevonden.<br>Voeg een MP3 link toe om te beginnen.</p>';
+        }
+
+        songs.forEach((s, i) => {
+            list.innerHTML += `
+                <div class="track" onclick="playSong(${i})">
+                    <img src="${laidImg}" class="track-img">
+                    <div class="track-info">
+                        <span class="track-title">${s.title}</span>
+                    </div>
+                    <button class="delete-btn" onclick="deleteSong(${i}, event)">✕</button>
+                </div>`;
+        });
+        localStorage.setItem('gym-ultimate-v1', JSON.stringify(songs));
+    }
+
+    function addTrack() {
+        const t = document.getElementById('title').value;
+        const u = document.getElementById('url').value;
+        if(t && u) { 
+            songs.push({title: t, url: u}); 
+            render();
+            document.getElementById('title').value = '';
+            document.getElementById('url').value = '';
+        } else { alert("Vul a.u.b. een naam en een MP3 link in."); }
+    }
+
+    function playSong(i) {
+        currentIdx = i;
+        audio.src = songs[i].url;
+        audio.play();
+        playBtn.innerText = "⏸️";
+        document.getElementById('now-playing-title').innerText = songs[i].title;
+    }
+
+    function togglePlay() {
+        if(currentIdx === -1 && songs.length > 0) return playSong(0);
+        if(audio.paused) { audio.play(); playBtn.innerText = "⏸️"; }
+        else { audio.pause(); playBtn.innerText = "▶️"; }
+    }
+
+    audio.ontimeupdate = function() {
+        if(audio.duration) {
+            const p = (audio.currentTime / audio.duration) * 100;
+            progress.style.width = p + "%";
+        }
+    };
+
+    progressBar.onclick = function(e) {
+        const pct = e.offsetX / progressBar.offsetWidth;
+        audio.currentTime = pct * audio.duration;
+    };
+
+    function toggleRepeat() {
+        isRepeat = !isRepeat;
+        document.getElementById('repeatBtn').classList.toggle('active', isRepeat);
+    }
+
+    function toggleShuffle() {
+        isShuffle = !isShuffle;
+        document.getElementById('shuffleBtn').classList.toggle('active', isShuffle);
+    }
+
+    audio.onended = function() {
+        if(isRepeat) {
+            playSong(currentIdx);
+        } else if(isShuffle) {
+            let next = Math.floor(Math.random() * songs.length);
+            playSong(next);
+        } else if(currentIdx < songs.length - 1) {
+            playSong(currentIdx + 1);
+        } else {
+            playBtn.innerText = "▶️";
+        }
+    };
+
+    function deleteSong(i, e) {
+        e.stopPropagation();
+        if(confirm("Nummer verwijderen?")) {
+            songs.splice(i, 1);
+            render();
+        }
+    }
+
+    function exportPlaylist() {
+        if(songs.length === 0) return alert("Playlist is leeg!");
+        const code = btoa(JSON.stringify(songs));
+        prompt("Kopieer deze code en stuur hem naar je vrienden:", code);
+    }
+
+    function importPlaylist() {
+        const code = prompt("Plak de playlist code hier:");
+        if(code) {
+            try {
+                const newSongs = JSON.parse(atob(code));
+                songs = [...songs, ...newSongs];
+                render();
+            } catch(e) { alert("Foutieve code!"); }
+        }
+    }
+
+    render();
+</script>
+</body>
+</html>
